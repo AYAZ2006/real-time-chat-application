@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from 'react'
 import {Link, useParams } from 'react-router-dom'
-function ReadonlyProfile() {
+function ReadOnlyProfile() {
   let {friendname}=useParams()
   const[github,setGithub]=useState('')
   const[linkedin,setLinkedin]=useState('')
@@ -37,4 +37,4 @@ function ReadonlyProfile() {
   )
 }
 
-export default ReadonlyProfile
+export default ReadOnlyProfile
