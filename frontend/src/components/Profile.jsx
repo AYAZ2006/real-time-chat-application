@@ -36,7 +36,7 @@ function Profile() {
       localStorage.setItem("portfolio", portfolio);
     
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/accounts/update-profile/${newUsername || Username}/`, {
+        const response = await fetch(`https://loopchat-backend.vercel.app/api/accounts/update-profile/${newUsername || Username}/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
