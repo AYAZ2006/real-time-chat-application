@@ -7,7 +7,7 @@ import Ai from './components/Ai'
 import Chat from './components/Chat'
 import Settings from './components/Settings'
 import Profile from './components/Profile'
-import ReadOnlyProfile from './components/ReadonlyProfile';
+import ReadOnlyProfile from './components/ReadOnlyProfile';
 import './App.css';
 function App() {
   return (
