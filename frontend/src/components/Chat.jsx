@@ -37,13 +37,16 @@ function Chat() {
   const fetchMessages = async () => {
     try {
       const responseSender = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${username}/${receiver}/`);
+      console.log("Sender API Response:", responseSender);
       const dataSender = await responseSender.json();
-      
+      console.log("Sender Data:", dataSender);
       const responseReceiver = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${receiver}/${username}/`);
+      console.log("Receiver API Response:", responseReceiver);
       const dataReceiver = await responseReceiver.json();
-
+      console.log("Receiver Data:", dataReceiver);
       const allMessages = [...(dataSender.messages || []), ...(dataReceiver.messages || [])];
       setMessages(allMessages.sort((a, b) => a.id - b.id));
+      console.log("Messages updated:", allMessages);
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
