@@ -36,10 +36,10 @@ function Chat() {
   }
   const fetchMessages = async () => {
     try {
-      const responseSender = await fetch(`http://127.0.0.1:8000/api/accounts/postmessages/${username}/${receiver}/`);
+      const responseSender = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${username}/${receiver}/`);
       const dataSender = await responseSender.json();
       
-      const responseReceiver = await fetch(`http://127.0.0.1:8000/api/accounts/postmessages/${receiver}/${username}/`);
+      const responseReceiver = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${receiver}/${username}/`);
       const dataReceiver = await responseReceiver.json();
 
       const allMessages = [...(dataSender.messages || []), ...(dataReceiver.messages || [])];
@@ -79,7 +79,7 @@ function Chat() {
       return;
     }
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/accounts/postmessages/${username}/${receiver}/`, {
+      const response = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${username}/${receiver}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
