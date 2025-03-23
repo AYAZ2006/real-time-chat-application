@@ -127,49 +127,48 @@ class Bring(APIView):
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from accounts.models import Message, CustomUser
+from accounts.models import Message  # Only importing Message model
 
 class ChatMessageView(APIView):
     def post(self, request, sendername, receivername):
+        """Handles sending a message (POST request) directly without checking if users exist."""
         content = request.data.get("message", "")
+
         if not content:
             return Response({"error": "Message content is required"}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            sender = CustomUser.objects.get(username=sendername)
-            receiver = CustomUser.objects.get(username=receivername)
-        except CustomUser.DoesNotExist:
-            return Response({"error": "Sender or receiver not found"}, status=status.HTTP_404_NOT_FOUND)
-        message = Message.objects.create(sender=sender, receiver=receiver, message=content)
+
+        # Directly create the message without checking if sender or receiver exist
+        message = Message.objects.create(sender_name=sendername, receiver_name=receivername, message=content)
+
         return Response({
             "id": message.id,
-            "sender": sender.username,
-            "receiver": receiver.username,
+            "sender": sendername,
+            "receiver": receivername,
             "message": message.message,
             "timestamp": message.timestamp.strftime("%Y-%m-%d %H:%M:%S")
         }, status=status.HTTP_201_CREATED)
 
     def get(self, request, sendername, receivername):
-        try:
-            sender = CustomUser.objects.get(username=sendername)
-            receiver = CustomUser.objects.get(username=receivername)
-        except CustomUser.DoesNotExist:
-            return Response({"error": "Sender or receiver not found"}, status=status.HTTP_404_NOT_FOUND)
+        """Handles retrieving messages (GET request) directly without checking if users exist."""
         messages = Message.objects.filter(
-            sender__in=[sender, receiver],
-            receiver__in=[sender, receiver]
+            sender_name__in=[sendername, receivername],
+            receiver_name__in=[sendername, receivername]
         ).order_by('timestamp')
+
         if not messages.exists():
             return Response({"error": "No messages found for this user pair."}, status=status.HTTP_404_NOT_FOUND)
+
         messages_data = [
             {
                 "id": msg.id,
-                "sender": msg.sender.username,
-                "receiver": msg.receiver.username,
+                "sender": msg.sender_name,
+                "receiver": msg.receiver_name,
                 "message": msg.message,
                 "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M:%S")
             }
             for msg in messages
         ]
+
         return Response(messages_data, status=status.HTTP_200_OK)
 
 @method_decorator(csrf_exempt, name='dispatch')
