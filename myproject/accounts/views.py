@@ -124,42 +124,53 @@ class Bring(APIView):
             return Response({"error": "Username not found"}, status=status.HTTP_404_NOT_FOUND)
         return Response({"username": username}, status=status.HTTP_200_OK)
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from accounts.models import Message, CustomUser
+
 class ChatMessageView(APIView):
-    MESSAGE_FILE_PATH = 'messages.json'
-
-    def _load_messages(self):
-        if os.path.exists(self.MESSAGE_FILE_PATH):
-            with open(self.MESSAGE_FILE_PATH, 'r') as file:
-                return json.load(file)
-        return {}
-
-    def _save_messages(self, messages):
-        with open(self.MESSAGE_FILE_PATH, 'w') as file:
-            json.dump(messages, file)
+    def post(self, request, sendername, receivername):
+        content = request.data.get("message", "")
+        if not content:
+            return Response({"error": "Message content is required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            sender = CustomUser.objects.get(username=sendername)
+            receiver = CustomUser.objects.get(username=receivername)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "Sender or receiver not found"}, status=status.HTTP_404_NOT_FOUND)
+        message = Message.objects.create(sender=sender, receiver=receiver, message=content)
+        return Response({
+            "id": message.id,
+            "sender": sender.username,
+            "receiver": receiver.username,
+            "message": message.message,
+            "timestamp": message.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        }, status=status.HTTP_201_CREATED)
 
     def get(self, request, sendername, receivername):
-        messages = self._load_messages()
-        if sendername in messages:
-            user_messages = [
-                msg for msg in messages[sendername] if isinstance(msg, dict) and msg.get('receiver') == receivername
-            ]
-            if user_messages:
-                return Response({"messages": user_messages}, status=status.HTTP_200_OK)
-        return Response({"error": "No messages found for this user pair."}, status=status.HTTP_404_NOT_FOUND)
-
-    def post(self, request, sendername, receivername):
         try:
-            message = request.data.get('message', '')
-        except AttributeError:
-            return Response({"error": "Invalid request format, data is not in the expected format."}, status=status.HTTP_400_BAD_REQUEST)
-        if not message:
-            return Response({"error": "Message content is required."}, status=status.HTTP_400_BAD_REQUEST)
-        messages = self._load_messages()
-        if sendername not in messages:
-            messages[sendername] = []
-        messages[sendername].append({"receiver": receivername, "message": message})
-        self._save_messages(messages)
-        return Response({"message": "Message posted successfully."}, status=status.HTTP_201_CREATED)
+            sender = CustomUser.objects.get(username=sendername)
+            receiver = CustomUser.objects.get(username=receivername)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "Sender or receiver not found"}, status=status.HTTP_404_NOT_FOUND)
+        messages = Message.objects.filter(
+            sender__in=[sender, receiver],
+            receiver__in=[sender, receiver]
+        ).order_by('timestamp')
+        if not messages.exists():
+            return Response({"error": "No messages found for this user pair."}, status=status.HTTP_404_NOT_FOUND)
+        messages_data = [
+            {
+                "id": msg.id,
+                "sender": msg.sender.username,
+                "receiver": msg.receiver.username,
+                "message": msg.message,
+                "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            }
+            for msg in messages
+        ]
+        return Response(messages_data, status=status.HTTP_200_OK)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateProfileView(APIView):
