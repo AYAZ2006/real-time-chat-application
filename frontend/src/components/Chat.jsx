@@ -22,7 +22,7 @@ function Chat() {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${username}/${receiver}/`);
+      const response = await fetch(`http://127.0.0.1:8000/api/accounts/postmessages/${username}/${receiver}/`);
 
       if (!response.ok) {
         throw new Error("Failed to fetch messages.");
@@ -48,7 +48,7 @@ function Chat() {
     }
 
     try {
-      const response = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${username}/${receiver}/`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/accounts/postmessages/${username}/${receiver}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
@@ -69,7 +69,7 @@ function Chat() {
       <div style={{ height: '560px', width: 'auto', overflowY: 'auto', padding: '10px' }}>
         {messages.length > 0 ? (
           messages.map((msg, index) => (
-            <div key={index}style={{backgroundColor: msg.sender === username ? 'white' : '#081b29',padding: '10px',color: msg.sender === username ? 'black' : 'white',borderRadius: '10px',maxWidth: '30%',textAlign: msg.sender === username ? 'right' : 'left',margin: msg.sender === username ? '0 auto 10px 0' : '0 0 10px auto',}}>
+            <div key={index}style={{backgroundColor: msg.sender === username ? 'white' : '#081b29',padding: '10px',color: msg.sender === username ? 'black' : 'white',borderRadius: '10px',maxWidth: '30%',textAlign: msg.sender === username ? 'left' : 'right',margin: msg.sender === username ? '0 0 10px auto' : '0 auto 10px 0',}}>
               <div>{msg.message}</div>
               <div style={{ fontSize: '12px', color: 'blue' }}>{msg.timestamp}</div>
             </div>
