@@ -16,13 +16,10 @@ class FriendRequest(models.Model):
         ordering=("timestamp",)
 
 class Message(models.Model):
-    sender = models.ForeignKey(CustomUser, related_name='sent_messages', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(CustomUser, related_name='received_messages', on_delete=models.CASCADE)
+    sender_name = models.CharField(max_length=255, default="Unknown")  # Set default to "Unknown"
+    receiver_name = models.CharField(max_length=255, default="Unknown")  # Set default to "Unknown"
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.sender.username} to {self.receiver.username}: {self.message}'
 
 class UserProfile(models.Model):
     username = models.CharField(max_length=100, unique=True)
