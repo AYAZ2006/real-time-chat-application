@@ -219,7 +219,7 @@ useEffect(() => {
             <Settings setIsGenOpen={setIsGenOpen} />
           </div>
         )}
-        {chatRoom && (<iframe id='webs' src="https://https://loopchat.vercel.app/#/chat/"></iframe>)}
+        {chatRoom && (<iframe id='webs' src="https://loopchat.vercel.app/#/chat/"></iframe>)}
       </div>
     </div>
   );
