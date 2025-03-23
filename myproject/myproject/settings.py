@@ -57,7 +57,7 @@ MIDDLEWARE = [
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = ['*']
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=["http://127.0.0.1:8000","https://loopchat-backend.vercel.app","https://real-time-chat-application-48xc-ocrsjgsfd.vercel.app"])
+CSRF_TRUSTED_ORIGINS = ['*']
 CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=False)
 CORS_ALLOW_CREDENTIALS = True
 
