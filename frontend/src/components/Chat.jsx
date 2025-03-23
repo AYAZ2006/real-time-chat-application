@@ -22,7 +22,7 @@ function Chat() {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/accounts/postmessages/${username}/${receiver}/`);
+      const response = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${username}/${receiver}/`);
 
       if (!response.ok) {
         throw new Error("Failed to fetch messages.");
@@ -48,7 +48,7 @@ function Chat() {
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/accounts/postmessages/${username}/${receiver}/`, {
+      const response = await fetch(`https://loopchat-backend.vercel.app/api/accounts/postmessages/${username}/${receiver}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
