@@ -127,7 +127,7 @@ class Bring(APIView):
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from accounts.models import Message  # Only importing Message model
+from accounts.models import Message
 
 class ChatMessageView(APIView):
     def post(self, request, sendername, receivername):
@@ -137,7 +137,7 @@ class ChatMessageView(APIView):
         if not content:
             return Response({"error": "Message content is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Directly create the message without checking if sender or receiver exist
+        # Directly create the message using sender_name and receiver_name
         message = Message.objects.create(sender_name=sendername, receiver_name=receivername, message=content)
 
         return Response({
@@ -170,6 +170,7 @@ class ChatMessageView(APIView):
         ]
 
         return Response(messages_data, status=status.HTTP_200_OK)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateProfileView(APIView):
