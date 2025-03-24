@@ -9,10 +9,10 @@ function Settings() {
   const[selectedLang,setSelectedLang]=useState(i18n.language || 'english')
   const[theme,setTheme]=useState(localStorage.getItem('theme')||'light')
   const username=localStorage.getItem('username')
-  const handleLogout=()=>{
-    localStorage.clear()
-    navigate("/login")
-  }
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "https://loopchat.vercel.app/#/login";
+};
   const handleSelectChange=(event)=>{
     setSelectedLang(event.target.value)
   }
